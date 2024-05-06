@@ -8,7 +8,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   if (!name || !email || !phone || !password || !role) {
     return next(new ErrorHandler("Please fill full form!"));
   }
-  const isEmail = await User.findOne({ email });
+  const isEmail = await User.find({ email });
   if (isEmail) {
     return next(new ErrorHandler("Email already registered!"));
   }
