@@ -8,19 +8,21 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   if (!name || !email || !phone || !password || !role) {
     return next(new ErrorHandler("Please fill full form!"));
   }
-  const isEmail = await User.find({ email });
-  if (isEmail) {
-    return next(new ErrorHandler("Email already registered!"));
-  }
-  const user = await User.create({
-    name,
-    email,
-    phone,
-    password,
-    role,
-  });
-  sendToken(user, 201, res, "User Registered!");
+  const isEmail = await User.findOne({ email });
+if (isEmail) {
+  return next(new ErrorHandler("Email already registered!", 400));
+}
+
+const user = await User.create({
+  name,
+  email,
+  phone,
+  password,
+  role,
 });
+if (!user) {
+  return next(new ErrorHandler("Failed to register user!", 500));
+}
 
 export const login = catchAsyncErrors(async (req, res, next) => {
   const { email, password, role } = req.body;
